@@ -27,17 +27,17 @@
 /* USER CODE BEGIN Includes */
 #include "tim.h"
 #include "adc.h"
-#include "dma.h"
 #include "usart.h"
 #include "stdio.h"
 #include "stdlib.h"
 #include <string.h>
-#include "wsn31.h"
 #include "cJSON.h"
+#include "queue.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
+QueueHandle_t JSON_QueueHandle; // 定义队列句柄
 void GetChipID ( uint32_t *id )
 {
    //小端模式
@@ -128,7 +128,9 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE END RTOS_TIMERS */
 
   /* USER CODE BEGIN RTOS_QUEUES */
-  /* add queues, ... */
+  JSON_QueueHandle = xQueueCreate(5, sizeof(char*));
+  if (JSON_QueueHandle == NULL) {
+  }
   /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
@@ -137,7 +139,7 @@ void MX_FREERTOS_Init(void) {
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
   /* definition and creation of DAQ_Task */
-  osThreadDef(DAQ_Task, Apptask_DAQ, osPriorityNormal, 0, 1024);
+  osThreadDef(DAQ_Task, Apptask_DAQ, osPriorityNormal, 0, 2056);
   DAQ_TaskHandle = osThreadCreate(osThread(DAQ_Task), NULL);
 
   /* definition and creation of LED_Task */
@@ -182,114 +184,58 @@ void StartDefaultTask(void const * argument)
 void Apptask_DAQ(void const * argument)
 {
   /* USER CODE BEGIN Apptask_DAQ */
+    char id[32];
+    const char* NT = "";
+    uint32_t uid = HAL_GetUIDw0();
+    snprintf(id, sizeof(id), "0001", (unsigned long)uid);
 
-    // 1. 变量定义
-    // 使用 static 确保卡尔曼滤波的状态在每次循环中保持记忆，不会被重置
-    static float x_est[8] = {100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f, 100.0f}; // 初始值设为非0，防止第一次计算除零
-    static float p_est[8] = {1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f}; // 初始协方差
-    static float k[8] = {0};
+    uint32_t ADC_Value[8] = {0};
+    double ad1 = 0.0, ad2 = 0.0, ad3 = 0.0, ad4 = 0.0, ad5 = 0.0, ad6 = 0.0, ad7 = 0.0, ad8 = 0.0;
 
-    // 卡尔曼参数 (假设这些是你的调试值)
-    const float q = 0.001f; // 过程噪声
-    const float r = 0.1f;   // 测量噪声
-
-    uint32_t chipID[3];
-    char UUID[9];
-    const char* NT = "0000";
-
-    // 协议头 (必须发送)
-    uint8_t te[2] = {0x03, 0x96};
-
-    uint16_t adc_buf[10] = {0};
-    float res_buf[8] = {0};
-
-    // 2. 硬件初始化
-    GetChipID(chipID);
-    sprintf(UUID, "%08X", chipID[2]);
-
-    vTaskDelay(250);
-    HAL_ADCEx_Calibration_Start(&hadc1, ADC_SINGLE_ENDED);
-    HAL_ADC_Start_DMA((ADC_HandleTypeDef*)&hadc1, (uint32_t*)adc_buf, 8);
-
-    // DIP 开关读取
-    GPIO_PinState DIP_netAddr[NUM_DIP_PINS];
-    GPIO_PinState DIP_sigChan[NUM_DIP_PINS];
-
-    DIP_sigChan[0] = HAL_GPIO_ReadPin(DIP_1_1_GPIO_Port, DIP_1_1_Pin);
-    DIP_sigChan[1] = HAL_GPIO_ReadPin(DIP_1_2_GPIO_Port, DIP_1_2_Pin);
-    DIP_sigChan[2] = HAL_GPIO_ReadPin(DIP_1_3_GPIO_Port, DIP_1_3_Pin);
-    DIP_sigChan[3] = HAL_GPIO_ReadPin(DIP_1_4_GPIO_Port, DIP_1_4_Pin);
-
-    DIP_netAddr[0] = HAL_GPIO_ReadPin(DIP_2_1_GPIO_Port, DIP_2_1_Pin);
-    DIP_netAddr[1] = HAL_GPIO_ReadPin(DIP_2_2_GPIO_Port, DIP_2_2_Pin);
-    DIP_netAddr[2] = HAL_GPIO_ReadPin(DIP_2_3_GPIO_Port, DIP_2_3_Pin);
-    DIP_netAddr[3] = HAL_GPIO_ReadPin(DIP_2_4_GPIO_Port, DIP_2_4_Pin);
-
-    uint8_t netAddr = GetDipSwitchValue(DIP_netAddr, NUM_DIP_PINS);
-    uint8_t sigChan = GetDipSwitchValue(DIP_sigChan, NUM_DIP_PINS);
-
-    WSN32_Init(9, sigChan, netAddr);
-    MX_USART1_UART_Init_115200();
-
-    /* Infinite loop */
+    vTaskDelay(10);
     for(;;)
     {
-        // --- 3. 数据采集与处理 ---
-        for (int i = 0; i < 8; i++) {
-            float z_measured = (float)adc_buf[i] * 3300.0f / 4096.0f;
+		for(int k = 0; k < 3; k++)
+		{
+			HAL_ADC_Start(&hadc1);
+			if (HAL_ADC_PollForConversion(&hadc1, 100) == HAL_OK) {
+				 ADC_Value[k] = HAL_ADC_GetValue(&hadc1);
+			}
+		}
+		HAL_ADC_Stop(&hadc1);
 
-            // 卡尔曼滤波更新
-            // x_est[i] = x_est[i]; // 这一行是多余的，已删除
-            p_est[i] = p_est[i] + q;
-            k[i] = p_est[i] / (p_est[i] + r);
-            x_est[i] = x_est[i] + k[i] * (z_measured - x_est[i]);
-            p_est[i] = (1.0f - k[i]) * p_est[i];
+		ad1 = (double)(ADC_Value[0] & 0xFFF) * 3300.0f / 4096.0f;
+		ad2 = (double)(ADC_Value[1] & 0xFFF) * 3300.0f / 4096.0f;
+		ad3 = (double)(ADC_Value[2] & 0xFFF) * 3300.0f / 4096.0f;
+		ad4 = (double)(ADC_Value[3] & 0xFFF) * 3300.0f / 4096.0f;
+		ad5 = (double)(ADC_Value[4] & 0xFFF) * 3300.0f / 4096.0f;
+		ad6 = (double)(ADC_Value[5] & 0xFFF) * 3300.0f / 4096.0f;
+		ad7 = (double)(ADC_Value[6] & 0xFFF) * 3300.0f / 4096.0f;
+		ad8 = (double)(ADC_Value[7] & 0xFFF) * 3300.0f / 4096.0f;
 
-            // 计算电阻值 (防止除以零)
-            // 只要 x_est 不为0 (初始值已设为100)，这里就不会算出 null
-            if (x_est[i] > 0.0001f || x_est[i] < -0.0001f) {
-                res_buf[i] = 33000.0f / x_est[i] - 10.0f;
-            } else {
-                res_buf[i] = 0.0f; // 默认值
-            }
-        }
+		// --- 4. JSON 组包 ---
+		cJSON *root = cJSON_CreateObject();
 
-        // --- 4. JSON 组包 ---
-        cJSON *root = cJSON_CreateObject();
-        if (root == NULL) {
-            vTaskDelay(100); // 内存不足保护
-            continue;
-        }
+		cJSON_AddStringToObject(root, "ID", id);
+		cJSON_AddStringToObject(root, "NT", NT);
+		cJSON_AddNumberToObject(root, "Sen.1", ad1);
+		cJSON_AddNumberToObject(root, "Sen.2", ad2);
+		cJSON_AddNumberToObject(root, "Sen.3", ad3);
+		cJSON_AddNumberToObject(root, "Sen.4", ad4);
+		cJSON_AddNumberToObject(root, "Sen.5", ad5);
+		cJSON_AddNumberToObject(root, "Sen.6", ad6);
+		cJSON_AddNumberToObject(root, "Sen.7", ad7);
+		cJSON_AddNumberToObject(root, "Sen.8", ad8);
 
-        cJSON_AddStringToObject(root, "ID", UUID);
-        cJSON_AddStringToObject(root, "NT", NT);
+		/* 生成 JSON 字符串 */
+		char *json = cJSON_Print(root);
+		HAL_UART_Transmit(&huart1, (uint8_t *)json, strlen(json), HAL_MAX_DELAY);
+		cJSON_free(json);
+		cJSON_Delete(root);
 
-        char sen_name[8];
-        for(int i=0; i<8; i++) {
-            sprintf(sen_name, "Sen.%d", i+1);
-            cJSON_AddNumberToObject(root, sen_name, res_buf[i]);
-        }
-
-        char *json_str = cJSON_Print(root);
-
-        // --- 5. 数据发送 ---
-        if (json_str != NULL) {
-            // 先发送协议头 (Binary)
-            HAL_UART_Transmit(&huart1, te, sizeof(te), 20);
-
-            // 再发送 JSON 数据 (Text)
-            /* USER CODE BEGIN 2 */
-            // ... 其他初始化代码
-            HAL_UART_Transmit(&huart1, (uint8_t *)json_str, strlen(json_str), 1000);
-
-            // 释放内存
-            cJSON_free(json_str);
-        }
-
-        // 释放 cJSON 对象内存
-        cJSON_Delete(root);
-
-        vTaskDelay(500);
+		vTaskDelay(250);
+		/* 任务延时：每隔200毫秒进行下一轮完整扫描 */
+		vTaskDelay(200);
     }
   /* USER CODE END Apptask_DAQ */
 }

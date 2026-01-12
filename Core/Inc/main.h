@@ -57,26 +57,8 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define DIP_1_4_Pin GPIO_PIN_1
-#define DIP_1_4_GPIO_Port GPIOB
-#define WSN32_SET_Pin GPIO_PIN_12
-#define WSN32_SET_GPIO_Port GPIOB
 #define LED_Pin GPIO_PIN_13
 #define LED_GPIO_Port GPIOB
-#define DIP_2_1_Pin GPIO_PIN_14
-#define DIP_2_1_GPIO_Port GPIOB
-#define DIP_2_2_Pin GPIO_PIN_15
-#define DIP_2_2_GPIO_Port GPIOB
-#define DIP_2_4_Pin GPIO_PIN_12
-#define DIP_2_4_GPIO_Port GPIOA
-#define DIP_2_3_Pin GPIO_PIN_15
-#define DIP_2_3_GPIO_Port GPIOA
-#define DIP_1_1_Pin GPIO_PIN_3
-#define DIP_1_1_GPIO_Port GPIOB
-#define DIP_1_2_Pin GPIO_PIN_4
-#define DIP_1_2_GPIO_Port GPIOB
-#define DIP_1_3_Pin GPIO_PIN_5
-#define DIP_1_3_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 

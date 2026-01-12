@@ -50,35 +50,14 @@ void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, WSN32_SET_Pin|LED_Pin, GPIO_PIN_RESET);
-
-  /*Configure GPIO pins : DIP_1_4_Pin DIP_2_1_Pin DIP_2_2_Pin DIP_1_1_Pin
-                           DIP_1_2_Pin DIP_1_3_Pin */
-  GPIO_InitStruct.Pin = DIP_1_4_Pin|DIP_2_1_Pin|DIP_2_2_Pin|DIP_1_1_Pin
-                          |DIP_1_2_Pin|DIP_1_3_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : WSN32_SET_Pin */
-  GPIO_InitStruct.Pin = WSN32_SET_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(WSN32_SET_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : LED_Pin */
   GPIO_InitStruct.Pin = LED_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(LED_GPIO_Port, &GPIO_InitStruct);
-
-  /*Configure GPIO pins : DIP_2_4_Pin DIP_2_3_Pin */
-  GPIO_InitStruct.Pin = DIP_2_4_Pin|DIP_2_3_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
 }
 
