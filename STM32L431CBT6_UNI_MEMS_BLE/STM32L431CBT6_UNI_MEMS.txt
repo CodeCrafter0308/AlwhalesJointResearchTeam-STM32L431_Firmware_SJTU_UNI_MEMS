@@ -1,0 +1,136 @@
+Configuration	STM32L431CBT6_UNI_MEMS
+STM32CubeMX 	6.8.1
+Date	04/08/2024
+MCU	STM32L431CBTx
+
+
+
+PERIPHERALS	MODES	FUNCTIONS	PINS
+ADC1	IN5 Single-ended	ADC1_IN5	PA0
+ADC1	IN6 Single-ended	ADC1_IN6	PA1
+ADC1	IN7 Single-ended	ADC1_IN7	PA2
+ADC1	IN8 Single-ended	ADC1_IN8	PA3
+ADC1	IN9 Single-ended	ADC1_IN9	PA4
+ADC1	IN10 Single-ended	ADC1_IN10	PA5
+ADC1	IN11 Single-ended	ADC1_IN11	PA6
+ADC1	IN12 Single-ended	ADC1_IN12	PA7
+RCC	Crystal/Ceramic Resonator	RCC_OSC_IN	PH0-OSC_IN (PH0)
+RCC	Crystal/Ceramic Resonator	RCC_OSC_OUT	PH1-OSC_OUT (PH1)
+SYS	Serial Wire	SYS_JTCK-SWCLK	PA14 (JTCK-SWCLK)
+SYS	Serial Wire	SYS_JTMS-SWDIO	PA13 (JTMS-SWDIO)
+SYS	TIM6	SYS_VS_tim6	VP_SYS_VS_tim6
+TIM1	ITR3	TIM1_VS_ClockSourceITR	VP_TIM1_VS_ClockSourceITR
+TIM1	Internal Clock	TIM1_VS_ClockSourceINT	VP_TIM1_VS_ClockSourceINT
+TIM1	PWM Generation CH1	TIM1_CH1	PA8
+TIM1	PWM Generation CH4	TIM1_CH4	PA11
+TIM2	Internal Clock	TIM2_VS_ClockSourceINT	VP_TIM2_VS_ClockSourceINT
+USART1	Asynchronous	USART1_RX	PA10
+USART1	Asynchronous	USART1_TX	PA9
+
+
+
+Pin Nb	PINs	FUNCTIONs	LABELs
+5	PH0-OSC_IN (PH0)	RCC_OSC_IN	
+6	PH1-OSC_OUT (PH1)	RCC_OSC_OUT	
+10	PA0	ADC1_IN5	
+11	PA1	ADC1_IN6	
+12	PA2	ADC1_IN7	
+13	PA3	ADC1_IN8	
+14	PA4	ADC1_IN9	
+15	PA5	ADC1_IN10	
+16	PA6	ADC1_IN11	
+17	PA7	ADC1_IN12	
+19	PB1	GPIO_Input	DIP_1_4
+25	PB12	GPIO_Output	WSN32_SET
+26	PB13	GPIO_Output	LED
+27	PB14	GPIO_Input	DIP_2_1
+28	PB15	GPIO_Input	DIP_2_2
+29	PA8	TIM1_CH1	
+30	PA9	USART1_TX	
+31	PA10	USART1_RX	
+32	PA11	TIM1_CH4	
+33	PA12	GPIO_Input	DIP_2_4
+34	PA13 (JTMS-SWDIO)	SYS_JTMS-SWDIO	
+37	PA14 (JTCK-SWCLK)	SYS_JTCK-SWCLK	
+38	PA15 (JTDI)	GPIO_Input	DIP_2_3
+39	PB3 (JTDO-TRACESWO)	GPIO_Input	DIP_1_1
+40	PB4 (NJTRST)	GPIO_Input	DIP_1_2
+41	PB5	GPIO_Input	DIP_1_3
+PERIPHERALS	MODES	FUNCTIONS	PINS
+ADC1	IN5 Single-ended	ADC1_IN5	PA0
+ADC1	IN6 Single-ended	ADC1_IN6	PA1
+ADC1	IN7 Single-ended	ADC1_IN7	PA2
+ADC1	IN8 Single-ended	ADC1_IN8	PA3
+ADC1	IN9 Single-ended	ADC1_IN9	PA4
+ADC1	IN10 Single-ended	ADC1_IN10	PA5
+ADC1	IN11 Single-ended	ADC1_IN11	PA6
+ADC1	IN12 Single-ended	ADC1_IN12	PA7
+RCC	Crystal/Ceramic Resonator	RCC_OSC_IN	PH0-OSC_IN (PH0)
+RCC	Crystal/Ceramic Resonator	RCC_OSC_OUT	PH1-OSC_OUT (PH1)
+SYS	Serial Wire	SYS_JTCK-SWCLK	PA14 (JTCK-SWCLK)
+SYS	Serial Wire	SYS_JTMS-SWDIO	PA13 (JTMS-SWDIO)
+SYS	TIM6	SYS_VS_tim6	VP_SYS_VS_tim6
+TIM1	ITR3	TIM1_VS_ClockSourceITR	VP_TIM1_VS_ClockSourceITR
+TIM1	Internal Clock	TIM1_VS_ClockSourceINT	VP_TIM1_VS_ClockSourceINT
+TIM1	PWM Generation CH1	TIM1_CH1	PA8
+TIM1	PWM Generation CH4	TIM1_CH4	PA11
+TIM2	Internal Clock	TIM2_VS_ClockSourceINT	VP_TIM2_VS_ClockSourceINT
+USART1	Asynchronous	USART1_RX	PA10
+USART1	Asynchronous	USART1_TX	PA9
+
+
+
+Pin Nb	PINs	FUNCTIONs	LABELs
+5	PH0-OSC_IN (PH0)	RCC_OSC_IN	
+6	PH1-OSC_OUT (PH1)	RCC_OSC_OUT	
+10	PA0	ADC1_IN5	
+11	PA1	ADC1_IN6	
+12	PA2	ADC1_IN7	
+13	PA3	ADC1_IN8	
+14	PA4	ADC1_IN9	
+15	PA5	ADC1_IN10	
+16	PA6	ADC1_IN11	
+17	PA7	ADC1_IN12	
+19	PB1	GPIO_Input	DIP_1_4
+25	PB12	GPIO_Output	WSN32_SET
+26	PB13	GPIO_Output	LED
+27	PB14	GPIO_Input	DIP_2_1
+28	PB15	GPIO_Input	DIP_2_2
+29	PA8	TIM1_CH1	
+30	PA9	USART1_TX	
+31	PA10	USART1_RX	
+32	PA11	TIM1_CH4	
+33	PA12	GPIO_Input	DIP_2_4
+34	PA13 (JTMS-SWDIO)	SYS_JTMS-SWDIO	
+37	PA14 (JTCK-SWCLK)	SYS_JTCK-SWCLK	
+38	PA15 (JTDI)	GPIO_Input	DIP_2_3
+39	PB3 (JTDO-TRACESWO)	GPIO_Input	DIP_1_1
+40	PB4 (NJTRST)	GPIO_Input	DIP_1_2
+41	PB5	GPIO_Input	DIP_1_3
+
+
+
+SOFTWARE PROJECT
+
+Project Settings : 
+Project Name : STM32L431CBT6_UNI_MEMS
+Project Folder : C:\Users\niwangze\STM32CubeIDE\workspace_1.12.1\STM32L431CBT6_UNI_MEMS
+Toolchain / IDE : STM32CubeIDE
+Firmware Package Name and Version : STM32Cube FW_L4 V1.17.2
+
+
+Code Generation Settings : 
+STM32Cube MCU packages and embedded software packs : Copy only the necessary library files
+Generate peripheral initialization as a pair of '.c/.h' files per peripheral : Yes
+Backup previously generated files when re-generating : No
+Delete previously generated files when not re-generated : Yes
+Set all free pins as analog (to optimize the power consumption) : No
+
+
+Toolchains Settings : 
+Compiler Optimizations : 
+
+
+
+
+
